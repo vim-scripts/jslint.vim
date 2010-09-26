@@ -1,52 +1,64 @@
 jslint.vim
 =============
 
-Vim plugin and command line tool for running JSLint <http://jslint.com/>.
+Vim plugin and command line tool for running [JSLint][].
+
+[JSLint]: http://jslint.com/
 
 JSLint is a handy tool that spots errors and common mistakes in
 JavaScript code.
 
+The source code for jslint.vim is hosted at
+<http://github.com/hallettj/jslint.vim>.
+
 This is alpha software and is under heavy development.
 
 
-Installation and Use
+Installation
 -----------------------
 
-- Make sure you have a JavaScript interpreter installed. In Ubuntu you can
-  install the Spidermonkey shell with this command:
+- Make sure you have a JavaScript interpreter installed.  On Linux jslint.vim
+  supports Spidermonkey, Rhino, and node.js.  Spidermonkey or node.js are
+  recommended because Rhino tends to have a long startup time.
+
+  In Ubuntu you can install the Spidermonkey shell with this command:
 
         $ sudo apt-get install spidermonkey-bin
 
+  Latest Ubuntu versions don't have spidermonkey in the default repositories.
+  You can use rhino instead:
+
+        $ sudo apt-get install rhino
+
+  Or you can find instructions for installing node.js on the [node.js website][nodejs].
+
+  [nodejs]: http://nodejs.org/
+
   On Windows you can use `cscript.exe` - which is probably already installed.
+
+  On MacOS X you don't need to install any JavaScript interpreter because one
+  is included with OS X by default.
 
 - If you have rake installed, run:
 
         $ rake install
 
-  Otherwise copy the directory plugin/jslint/ into your Vim plugin directory.
-  Usually this is `~/.vim/plugin/`. On Windows it is `~/vimfiles/plugin/`.
+  Otherwise copy the directory ftplugin/ into your Vim ftplugin directory.
+  Usually this is `~/.vim/ftplugin/`. On Windows it is `~/vimfiles/ftplugin/`.
 
-- Simple mode:
+ Usage
+ -----------------------
 
-    *   Open a JavaScript file in Vim and run the command `:JSLintLight` to
-        check the file. If there are potential errors they will be highlighted
-        in red.  If there is an error on the line under the cursor an
-        explanation of that error will be printed at the bottom of the screen.
+- This plugin automatically checks the JavaScript source and highlights the
+  lines with errors.
 
-        Run `:JSLintLight` again once the errors are fixed to remove error
-        highlighting.
+  It also will display more information about the error in the commandline if the curser is
+  in the same line.
 
-- Quickfix mode:
-
-    *   Open a JavaScript file in Vim and run the command `:JSLint` to check
-        the file. If there are potential errors they will be highlighted in red
-        and the quickfix window will open.
-
-        Run `:JSLint` again once the errors are fixed to remove error
-        highlighting and to close the quickfix window.
+- You also can call it manually via `:JSLintUpdate`
 
 - (optional) Add any valid JSLint options to `~/.jslintrc` file, they will be
-  used as global options for all JavaScript file.
+  used as global options for all JavaScript files.
   For example:
 
         /*jslint browser: true, regexp: true */
@@ -54,54 +66,37 @@ Installation and Use
 
         /* vim: set ft=javascript: */
 
-- (optional) Add configuration to your `~/.vimrc` file to bind JSLint to a key.
-  For example:
-
-        " Run JSLint on the current file in simple mode when <F4> is pressed.
-        map <F4> :JSLintLight<CR>
-
-        " Run JSLint on the current file with quickfix when <F5> is pressed.
-        map <F5> :JSLint<CR>
-
 To get a detailed report of any issues in your JavaScript file outside of Vim,
 run the `bin/jslint` executable in a terminal. For example:
 
-    $ bin/jslint plugin/jslint/fulljslint.js
+    $ bin/jslint ftplugin/jslint/fulljslint.js
 
 You can copy `bin/jslint` into for `PATH` for easier access. The executable
 requires that the Vim plugin is installed and also requires Ruby.
 
-To clear highlighted errors run `:JSLintClear`.  To disable error highlighting
-altogether add this line to your `~/.vimrc` file:
+To disable error highlighting altogether add this line to your `~/.vimrc` file:
 
-    let g:JSLintHighlightErrorLine = 0 
+    let g:JSLintHighlightErrorLine = 0
 
 
-Working with quickfix
------------------------
+Alternative Plugins
+---------------------
 
-The quickfix window will display a list of all potential errors in the file
-with an explanation for each. Running `:JSLint` will automatically open the
-quickfix window if there are potential errors and will close it if no problems
-are detected.
+There are other plugins for Vim that integrate [JavaScript Lint][].  JavaScript
+Lint is another JavaScript checker that is similar to JSLint.
 
-Note that the quickfix list will be cleared and regenerated every time you run
-`:JSLint`.
+[JavaScript Lint]: http://www.javascriptlint.com/
 
-Here are some quick notes for using quickfix:
+[jsl.vim][] uses Vim's compiler infrastructure making its use consistent with
+syntax checkers for other languages.
 
-- In the quickfix window, moving your cursor over an item and pressing enter
-  will jump the cursor to that line in your file.
+[jsl.vim]: http://www.vim.org/scripts/script.php?script_id=2630
 
-- In either your file or the quickfix window `:cn` will jump the cursor to the
-  next potential error, and `:cp` will jump the cursor to the previous item.
+[javaScriptLint.vim][] runs the contents of a JavaScript file through
+JavaScript Lint after the file's buffer is saved and places any warnings in the
+quickfix error window.
 
-- Open and close the quickfix window with `:copen[n]` and `:ccl[ose]`.
-
-You can find more detailed documentation in the [Vim Reference Manual][quickfix
-manual].
-
-[quickfix manual]: http://www.vim.org/htmldoc/quickfix.html
+[javaScriptLint.vim]: http://www.vim.org/scripts/script.php?script_id=2578
 
 
 Credits
@@ -109,13 +104,20 @@ Credits
 
 - Jesse Hallett -- original author
 - Nathan Smith -- Windows compatibility, quickfix integration, better OS X
-  compatibility, and many other improvements
+  compatibility, support for node.js, and other improvements
 - Travis Jeffery -- Easy plugin installation with rake
 - Sam Goldstein -- Display of problem report for the current line and bug fixes
 - Bryan Chow -- Fixes for formatting issues and typos
 - Jeff Buttars -- Options to remove and to disable error highlighting
 - Rainux Luo -- Support for reading JSLint options from a `~/.jslintrc` file
-
+- Pascal Hartig -- Support for running jslint with rhino and other updates
+- Martin Schürrer -- Fixing path issues and error handling
+- Nik Graf -- Documentation updates
+- Ian McCracken -- Real-time error checking
+- Luke Smith -- Enhancement of OS X support
+- Michael Smith -- Feature to customize JavaScript executable that is used by
+  setting JS_CMD environment variable
+- Szilágyi Szilveszter -- Fixes for bugs when running in Windows
 
 License
 ---------
